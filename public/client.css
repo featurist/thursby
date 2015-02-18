@@ -1,3 +1,13 @@
 body {
-  color: green;
+  font-family: Helvetica;
+}
+
+textarea {
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
 }
