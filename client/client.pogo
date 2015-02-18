@@ -31,16 +31,22 @@ renderApp (model) =
         cols = 80
         binding = {
           get() = model.code
-          set(code) =
+          set(code) = 
             model.code = code
             try
               model.compiledCode = @new Function('h','data',code)
-              firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
             catch (e)
               model.compiledCode () =
                 h 'pre' 'ERROR: ' (e.toString())
+
+            nil
+                
         }
       }
+      h 'br'
+      h 'button' {style = {marginBottom = '20px'}, onclick() =
+        firebaseRef.update(code: model.code)
+      } 'Save code'
     )
     h '.data' (
       h 'label' 'data'
@@ -51,7 +57,7 @@ renderApp (model) =
           get() = 
             parsed = tryParse(model.data)
             if (model.code && model.data && model.parsedData)
-              firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
+              firebaseRef.update(data: model.data, parsedData: model.parsedData)
 
             if (!parsed || JSON.stringify(model.parsedData) == JSON.stringify(parsed))
               model.data
@@ -68,7 +74,7 @@ renderApp (model) =
             catch (ex)
               model.error = ex
 
-            firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
+            firebaseRef.update(data: model.data, parsedData: model.parsedData)
         }
       }
     )
