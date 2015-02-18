@@ -1,0 +1,1 @@
+web: ./node_modules/.bin/pogo ./server/server.pogo
