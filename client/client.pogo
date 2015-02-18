@@ -6,6 +6,23 @@ Firebase = require 'firebase'
 firebaseRef = @new Firebase("https://thursby.firebaseio.com/")
 
 render (model) =
-  h '.soon' 'coming soon'
+  model.refresh = plastiq.html.refresh
 
-plastiq.attach (document.body, render, {})
+  if (model.authError)
+    h 'pre' "AUTH ERROR: #(model.authError)"
+  else if (model.authData)
+    h 'pre' "AUTH DATA:\n#(JSON.stringify(model.authData))"
+  else
+    h 'button' {
+      onclick () =
+        firebaseRef.authWithOAuthPopup "github" @(error, authData)
+          model.authError = error
+          model.authData = authData
+          model.authenticating = false
+          model.refresh()
+    } 'Login'
+
+
+model = {}
+
+plastiq.attach (document.body, render, model)
