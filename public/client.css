@@ -11,3 +11,8 @@ label {
   display: block;
   font-weight: bold;
 }
+
+img.avatar {
+  width: 30px;
+  height: 30px;
+}
