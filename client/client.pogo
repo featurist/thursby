@@ -14,14 +14,20 @@ render (model) =
     h 'pre' "AUTH DATA:\n#(JSON.stringify(model.authData))"
   else
     h 'button' {
-      onclick () =
-        firebaseRef.authWithOAuthPopup "github" @(error, authData)
-          model.authError = error
-          model.authData = authData
-          model.refresh()
+      onclick () = model.authenticate()
     } 'Login'
 
 
-model = {}
+model = {
+  authenticate () =
+    try
+      self.authData = promise! @(fulfilled, rejected)
+        firebaseRef.authWithOAuthPopup "github" @(error, authData)
+          fulfilled(authData)
+          rejected(error)
+    catch (e)
+      self.authError = e
+
+}
 
 plastiq.attach (document.body, render, model)
