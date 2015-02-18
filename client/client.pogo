@@ -6,26 +6,20 @@ Firebase = require 'firebase'
 firebaseRef = @new Firebase("https://thursby.firebaseio.com/")
 
 firebaseChanged (refresh) =
-  firebaseRef.child("data").on "value" @(snapshot)
-    console.log ("GOT FIREBASE DATA")
-    model.data = snapshot.val()
-    refresh()
-
-  firebaseRef.child("code").on "value" @(snapshot)
-    console.log ("GOT FIREBASE CODE")
-    model.code = snapshot.val()
-    refresh()
-
-  firebaseRef.child("parsedData").on "value" @(snapshot)
-    console.log ("GOT FIREBASE CODE")
-    model.parsedData = snapshot.val()
+  firebaseRef.on "value" @(snapshot)
+    console.log ("GOT FIREBASE MODEL")
+    model.data = snapshot.val().data
+    model.parsedData = snapshot.val().parsedData
+    model.code = snapshot.val().code
+    model.compiledCode = @new Function('h','data',model.code)
+    
     refresh()
 
 tryParse(data) =
   try
     JSON.parse(data)
   catch (ex)
-    "Invalid JSON"
+    nil
 
 renderApp (model) =
   h '.app' (
@@ -59,14 +53,21 @@ renderApp (model) =
             if (model.code && model.data && model.parsedData)
               firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
 
-            if (JSON.stringify(model.parsedData) == JSON.stringify(parsed))
+            if (!parsed || JSON.stringify(model.parsedData) == JSON.stringify(parsed))
               model.data
             else
               model.data = JSON.stringify(model.parsedData, null, 2)
 
           set(data) =
             model.data = data
-            model.parsedData = tryParse(model.data)
+            parsed = tryParse(model.data)
+            
+            try
+              model.parsedData = JSON.parse(data)
+              model.error = nil
+            catch (ex)
+              model.error = ex
+
             firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
         }
       }
@@ -77,8 +78,10 @@ renderApp (model) =
         try
           model.compiledCode(h, model.parsedData)
         catch (ex)
-          h ('span.error', ex.message)
+          model.error = ex
+          ''
       )
+      h 'alert alert-error', model.error && model.error.message
     )
   )
 
