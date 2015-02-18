@@ -16,6 +16,17 @@ firebaseChanged (refresh) =
     model.code = snapshot.val()
     refresh()
 
+  firebaseRef.child("parsedData").on "value" @(snapshot)
+    console.log ("GOT FIREBASE CODE")
+    model.parsedData = snapshot.val()
+    refresh()
+
+tryParse(data) =
+  try
+    JSON.parse(data)
+  catch (ex)
+    "Invalid JSON"
+
 renderApp (model) =
   h '.app' (
     h.animation(firebaseChanged)
@@ -29,8 +40,8 @@ renderApp (model) =
           set(code) =
             model.code = code
             try
-              model.compiledCode = @new Function(code)
-              firebaseRef.set(code: code)
+              model.compiledCode = @new Function('h','data',code)
+              firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
             catch (e)
               model.compiledCode () =
                 h 'pre' 'ERROR: ' (e.toString())
@@ -43,17 +54,30 @@ renderApp (model) =
         rows = 10
         cols = 80
         binding = {
-          get() = model.data
+          get() = 
+            parsed = tryParse(model.data)
+            if (model.code && model.data && model.parsedData)
+              firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
+
+            if (JSON.stringify(model.parsedData) == JSON.stringify(parsed))
+              model.data
+            else
+              model.data = JSON.stringify(model.parsedData, null, 2)
+
           set(data) =
             model.data = data
-            firebaseRef.set(data: value)
+            model.parsedData = tryParse(model.data)
+            firebaseRef.set(code: model.code, data: model.data, parsedData: model.parsedData)
         }
       }
     )
     h '.render' (
       h 'label' 'render'
       h 'div' (
-        model.compiledCode()
+        try
+          model.compiledCode(h, model.parsedData)
+        catch (ex)
+          h ('span.error', ex.message)
       )
     )
   )
