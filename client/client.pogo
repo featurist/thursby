@@ -5,17 +5,6 @@ Firebase = require 'firebase'
 
 firebaseRef = @new Firebase("https://thursby.firebaseio.com/")
 
-codeChanged (value) =
-  try
-    model.compiledCode = @new Function(value)
-    firebaseRef.set(code: value)
-  catch (e)
-    model.compiledCode () =
-      h 'pre' 'ERROR: ' (e.toString())
-
-dataChanged (value) =
-  firebaseRef.set(data: value)
-
 firebaseChanged (refresh) =
   firebaseRef.child("data").on "value" @(snapshot)
     console.log ("GOT FIREBASE DATA")
@@ -35,7 +24,17 @@ renderApp (model) =
       h 'textarea' {
         rows = 10
         cols = 80
-        binding = [model, 'code', codeChanged]
+        binding = {
+          get() = model.code
+          set(code) =
+            model.code = code
+            try
+              model.compiledCode = @new Function(code)
+              firebaseRef.set(code: code)
+            catch (e)
+              model.compiledCode () =
+                h 'pre' 'ERROR: ' (e.toString())
+        }
       }
     )
     h '.data' (
@@ -43,7 +42,12 @@ renderApp (model) =
       h 'textarea' {
         rows = 10
         cols = 80
-        binding = [model, 'data', dataChanged]
+        binding = {
+          get() = model.data
+          set(data) =
+            model.data = data
+            firebaseRef.set(data: value)
+        }
       }
     )
     h '.render' (
