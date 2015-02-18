@@ -18,7 +18,6 @@ render (model) =
         firebaseRef.authWithOAuthPopup "github" @(error, authData)
           model.authError = error
           model.authData = authData
-          model.authenticating = false
           model.refresh()
     } 'Login'
 
