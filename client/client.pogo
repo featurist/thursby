@@ -24,21 +24,20 @@ tryParse(data) =
 
 renderApp (model) =
   h '.app' (
+    h.animation(firebaseChanged)
     h '.user' (
       h 'img.avatar' {
         src = model.authData.github.cachedUserProfile.avatar_url
       }
       h '.name' (model.authData.github.displayName)
-      h 'a.log-out' {
-        href = '#log-out'
+      h 'a.logout' {
+        href = '#logout'
         onclick(e) =
           e.preventDefault()
           firebaseRef.unauth()
       } 'Logout'
     )
-    h.animation(firebaseChanged)
     h '.code' (
-      h 'label' 'code'
       h 'textarea' {
         rows = 10
         cols = 80
@@ -56,13 +55,12 @@ renderApp (model) =
 
         }
       }
-      h 'br'
-      h 'button' {style = {marginBottom = '20px'}, onclick() =
-        firebaseRef.update(code: model.code)
-      } 'Save code'
+      h 'button.save-code' {
+        onclick() =
+          firebaseRef.update(code: model.code)
+      } 'Save Code'
     )
     h '.data' (
-      h 'label' 'data'
       h 'textarea' {
         rows = 10
         cols = 80
@@ -92,7 +90,6 @@ renderApp (model) =
       }
     )
     h '.render' (
-      h 'label' 'render'
       h 'div' (
         try
           model.compiledCode(h, model.parsedData)
@@ -112,7 +109,7 @@ render (model) =
   else if (model.authData)
     renderApp (model)
   else
-    h 'button' { onclick () = model.authenticate() } 'Login'
+    h 'button.login' { onclick () = model.authenticate() } 'Login with Github'
 
 model = {
   authData = nil
