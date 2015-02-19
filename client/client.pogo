@@ -15,6 +15,8 @@ firebaseChanged (refresh) =
     model.compiledCode = @new Function('h', 'data', model.code)
 
     refresh()
+  @(error)
+    alert "ACCESS DENIED (UID=#(window.authData.uid))"
 
 tryParse(data) =
   try
@@ -133,6 +135,7 @@ model = {
 
 firebaseRef.onAuth @(authData)
   model.authData = authData
+  window.authData = authData
   if (model.refresh)
     model.refresh ()
 
