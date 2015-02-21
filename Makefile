@@ -4,4 +4,7 @@ server :
 watch :
 	npm run watch
 
-.PHONY: server watch
+test :
+	npm test
+
+.PHONY: server watch test
