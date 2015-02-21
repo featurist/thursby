@@ -6,7 +6,8 @@
   "scripts": {
     "start": "pogo server/server.pogo",
     "postinstall": "browserify client/client.pogo -t pogoify --extension .pogo -o public/client.js",
-    "watch": "watchify client/client.pogo -t pogoify --extension .pogo -o public/client.js"
+    "watch": "watchify client/client.pogo -t pogoify --extension .pogo -o public/client.js",
+    "test": "mocha test/*Spec.pogo"
   },
   "engines": {
     "node": "0.10.x"
@@ -20,11 +21,14 @@
     "express": "4.11.2",
     "express-session": "1.10.3",
     "firebase": "2.2.0",
-    "plastiq": "^1.9.2",
+    "plastiq": "git://github.com/featurist/plastiq.git#more-server-side-rendering",
     "pogo": "0.9.10",
     "pogoify": "0.1.1"
   },
   "devDependencies": {
-    "watchify": "^2.3.0"
+    "chai": "2.0.0",
+    "mocha": "2.1.0",
+    "virtual-dom-stringify": "2.1.0",
+    "watchify": "2.3.0"
   }
 }
