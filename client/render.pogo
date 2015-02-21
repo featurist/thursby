@@ -4,8 +4,25 @@ pogo = require 'pogo'
 
 renderApp (model) =
   h '.app' (
+    { class = model.layout }
     h.animation(model.firebaseChanged.bind(model))
-    h '.user' (
+    h '.header' (
+      h '.edit-toggle' (
+        if (model.layout == 'render-only')
+          h 'a' {
+            href = '#edit'
+            onclick (e) =
+              e.preventDefault()
+              model.layout = 'edit'
+          } 'Edit'
+        else
+          h 'a' {
+            href = '#finish-editing'
+            onclick (e) =
+              e.preventDefault()
+              model.layout = 'render-only'
+          } 'Done'
+      )
       h 'img.avatar' {
         src = model.authData.github.cachedUserProfile.avatar_url
       }

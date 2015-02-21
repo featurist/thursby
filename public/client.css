@@ -2,23 +2,23 @@ body {
   font-family: Helvetica;
 }
 
-textarea {
+.app textarea {
   font-family: monospace;
   margin-bottom: 10px;
 }
 
-label {
+.app label {
   display: block;
   font-weight: bold;
 }
 
-img.avatar {
+.app img.avatar {
   width: 30px;
   height: 30px;
   margin: 5px;
 }
 
-.user {
+.app .header {
   position: fixed;
   top: 0;
   left: 0;
@@ -27,11 +27,11 @@ img.avatar {
   height: 40px;
 }
 
-.user .avatar {
+.app .header .avatar {
   float: right;
 }
 
-.user .name {
+.app .header .name {
   display: block;
   text-align: right;
   color: white;
@@ -41,7 +41,24 @@ img.avatar {
   font-size: 0.9em;
 }
 
-.user .logout {
+.app .header .edit-toggle {
+  float: left;
+}
+
+.app .header .edit-toggle a {
+  color: #fff;
+  padding: 4px;
+  margin: 6px;
+  border-radius: 4px;
+  width: 70px;
+  line-height: 20px;
+  display: inline-block;
+  background-color: #6688AA;
+  text-decoration: none;
+  text-align: center;
+}
+
+.app .header .logout {
   display: block;
   text-align: right;
   color: #ddd;
@@ -49,29 +66,36 @@ img.avatar {
   font-size: 0.8em;
 }
 
-
-.code, .data {
+.app .code, .app .data {
   width: 50%;
   position: fixed;
   left: 0;
   background-color: #efefef;
 }
 
-.code {
+.app .code {
   top: 40px;
   bottom: 50%;
 }
 
-.code textarea, .data textarea {
+.app.render-only .code, .app.render-only .data {
+  visibility: hidden;
+}
+
+.app.render-only .render {
+  left: 0;
+}
+
+.app .code textarea, .app .data textarea {
   height: 100%;
 }
 
-.data {
+.app .data {
   top: 50%;
   bottom: 0;
 }
 
-.render {
+.app .render {
   position: fixed;
   left: 52%;
   top: 50px;
@@ -80,7 +104,7 @@ img.avatar {
   overflow: scroll;
 }
 
-textarea {
+.app textarea {
   width: 100%;
   height: 80%;
   position: relative;
@@ -90,7 +114,7 @@ textarea {
   font-size: 1.1em;
 }
 
-.login {
+.app .login {
   width: 200px;
   height: 40px;
   margin: auto;
@@ -98,7 +122,7 @@ textarea {
   margin-top: 10%;
 }
 
-button.save-code {
+.app button.save-code {
   margin-bottom: 20px;
   position: absolute;
   right: 0;

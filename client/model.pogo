@@ -40,6 +40,8 @@ model = {
   compiledCode () =
     h 'pre' '...'
 
+  layout = 'render-only'
+
 }
 
 model.connectToFirebase ()
