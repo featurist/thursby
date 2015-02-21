@@ -1,4 +1,5 @@
 render = require '../client/render'
+dom = require './dom'
 stringify = require 'virtual-dom-stringify'
 expect = require 'chai'.expect
 
@@ -40,7 +41,17 @@ describe 'render'
 
     describe 'when the layout is render-only'
 
-      it 'adds the app-only class to the app element'
+      beforeEach
         model.layout = 'render-only'
-        vdom = render(model)
-        expect(vdom.properties.className).to.contain 'render-only'
+
+      it 'adds the render-only class to the app element'
+        app = dom(render(model))
+        expect(app.classes()).to.eql ['app', 'render-only']
+
+      describe 'after hitting the edit toggle'
+
+        it 'changes the app class to edit'
+          app = dom(render(model))
+          app.click 'Edit'
+          app := dom(render(model))
+          expect(app.classes()).to.eql ['app', 'edit']
